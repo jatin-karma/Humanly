@@ -931,7 +931,7 @@
                 displayPrediction(data);
             } catch (error) {
                 console.error("Prediction Error:", error);
-                alert("Failed to connect to AI container! Make sure your Docker container is running on port 8000.");
+                alert("Failed to reach the AI model! Please try again in a moment.");
             } finally {
                 loading.style.display = 'none';
             }

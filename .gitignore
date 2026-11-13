@@ -31,3 +31,14 @@ models/*training.csv
 # Temporary guide notes
 areyouahuman.md
 README_METRICS.md
+
+# HuggingFace-only deployment file (not part of GitHub project)
+app.py
+
+
+# Temporary guide notes
+areyouahuman.md
+README_METRICS.md
+
+# HuggingFace-only deployment file (not part of GitHub project)
+app.py
