@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Humanly - Human or Not?</title>
+    <!-- Google Fonts: Plus Jakarta Sans (body), Outfit (playful titles), Caveat (handwriting note) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Outfit:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary: #5c54e5;
+            --primary-hover: #4a41d9;
+            --primary-light: #ede9fe;
+            --accent-coral: #f43f5e;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-page: #f8faff;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --dashed-border: #c7d2fe;
+            --radius-card: 24px;
+            --radius-pill: 9999px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Pastel Blobs in Background */
+        .blob-bg {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .blob-1 {
+            width: 450px;
+            height: 450px;
+            background: #e0e7ff;
+            top: -100px;
+            left: -150px;
+        }
+
+        .blob-2 {
+            width: 400px;
+            height: 400px;
+            background: #fef3c7;
+            top: 50px;
+            right: -100px;
+        }
+
+        .blob-3 {
+            width: 500px;
+            height: 500px;
+            background: #fce7f3;
+            bottom: -150px;
+            left: 20%;
+        }
+
+        /* Top Navbar */
+        .navbar {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            color: var(--primary);
+            font-size: 1.6rem;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 1.1rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .nav-pill:hover {
+            color: var(--text-dark);
+            background: #f1f5f9;
+        }
+
+        .nav-pill.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.4rem 1rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: #dcfce7;
+            color: #15803d;
+            transition: all 0.3s;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #16a34a;
+            box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        .status-badge.offline {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-badge.offline .status-dot {
+            background: #dc2626;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 6px rgba(22, 163, 74, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
+            }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1080px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1rem 1.5rem 3rem;
+            flex: 1;
+        }
+
+        /* Hero Header */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1.5rem 0 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .mascot-container {
+            width: 170px;
+            height: 170px;
+            flex-shrink: 0;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .hero-text {
+            text-align: left;
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.4rem, 5vw, 3.8rem);
+            font-weight: 800;
+            line-height: 1.15;
+        }
+
+        .hero-title .human {
+            color: var(--primary);
+        }
+
+        .hero-title .or {
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .hero-title .not {
+            color: var(--accent-coral);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: #475569;
+            margin-top: 0.5rem;
+            font-weight: 500;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-subtitle::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -6px;
+            width: 100%;
+            height: 4px;
+            background: #fbbf24;
+            border-radius: 4px;
+            opacity: 0.8;
+        }
+
+        /* Grid Section: Two Cards */
+        .app-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: stretch;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 868px) {
+            .app-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-text {
+                text-align: center;
+            }
+
+            .hero {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Left Card: Upload Dropzone */
+        .upload-card {
+            background: var(--card-bg);
+            border: 2px dashed var(--dashed-border);
+            border-radius: var(--radius-card);
+            padding: 2.5rem 1.75rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.05);
+            transition: all 0.25s ease;
+            min-height: 380px;
+            position: relative;
+        }
+
+        .upload-card:hover,
+        .upload-card.dragover {
+            border-color: var(--primary);
+            background: #fafbff;
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px -5px rgba(99, 102, 241, 0.12);
+        }
+
+        .cloud-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ede9fe 0%, #c7d2fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            color: var(--primary);
+            box-shadow: 0 8px 16px -4px rgba(99, 102, 241, 0.25);
+        }
+
+        .upload-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.35rem;
+        }
+
+        .upload-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .badge-pill {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 0.35rem 0.9rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-choose {
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 0.85rem 2rem;
+            border-radius: var(--radius-pill);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(92, 84, 229, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .btn-choose:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(92, 84, 229, 0.45);
+        }
+
+        /* Right Card: Result Showcase */
+        .result-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-card);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04);
+            min-height: 380px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        /* Empty Placeholder State inside Result Card */
+        .result-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            color: #94a3b8;
+            padding: 2rem 1rem;
+        }
+
+        .result-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.6;
+        }
+
+        .result-empty-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .result-empty-sub {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            margin-top: 0.25rem;
+        }
+
+        /* Active Result View */
+        .result-active {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .result-check-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--success);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .result-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .confidence-label {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-left: 3.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .confidence-pct {
+            font-weight: 700;
+            color: var(--success);
+            font-size: 1.15rem;
+        }
+
+        /* Progress bar */
+        .progress-track {
+            width: 100%;
+            height: 14px;
+            background: #e2e8f0;
+            border-radius: var(--radius-pill);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: var(--radius-pill);
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Image Preview & Note Row */
+        .preview-row {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: auto;
+        }
+
+        .preview-img-box {
+            width: 140px;
+            height: 140px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 3px solid #f1f5f9;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
+            background: #f8fafc;
+        }
+
+        .preview-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .doodle-note {
+            font-family: 'Caveat', cursive;
+            font-size: 1.85rem;
+            font-weight: 700;
+            line-height: 1.15;
+            color: #334155;
+            transform: rotate(-2deg);
+            position: relative;
+        }
+
+        .doodle-note .sub-doodle {
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: #94a3b8;
+            border-radius: 4px;
+            margin-top: 4px;
+            opacity: 0.5;
+        }
+
+        /* Non-Human Theme adjustments */
+        .result-card.is-non-human {
+            border-color: #fecdd3;
+        }
+
+        .result-card.is-non-human .result-check-icon {
+            background: var(--accent-coral);
+        }
+
+        .result-card.is-non-human .confidence-pct {
+            color: var(--accent-coral);
+        }
+
+        .result-card.is-non-human .progress-fill {
+            background: var(--accent-coral);
+        }
+
+        /* Loading Spinner Overlay */
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: var(--radius-card);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #ede9fe;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 0.75rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: auto;
+        }
+
+        footer span {
+            color: var(--accent-coral);
+        }
+
+        /* Modal for About */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(6px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            width: 100%;
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        .modal h2 {
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 0.75rem;
+        }
+
+        .modal p {
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Ambient Blobs -->
+    <div class="blob-bg blob-1"></div>
+    <div class="blob-bg blob-2"></div>
+    <div class="blob-bg blob-3"></div>
+
+    <!-- Top Navbar -->
+    <header class="navbar">
+        <a href="#" class="brand">
+            <span class="brand-icon">✦</span> Humanly
+        </a>
+
+        <nav class="nav-links">
+            <a href="#" class="nav-pill active">
+                <span>🏠</span> Home
+            </a>
+            <a href="#about" class="nav-pill" onclick="openModal(event)">
+                <span>ℹ️</span> About
+            </a>
+            <a href="https://github.com" target="_blank" class="nav-pill">
+                <span>🐙</span> GitHub
+            </a>
+        </nav>
+
+        <div id="statusBadge" class="status-badge">
+            <span class="status-dot"></span>
+            <span id="statusText">Checking Model...</span>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <main class="container">
+
+        <!-- Hero Header with Robot Mascot -->
+        <section class="hero">
+            <div class="mascot-container">
+                <!-- Modern SVG Robot Mascot holding photo frame -->
+                <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Antenna -->
+                    <circle cx="100" cy="24" r="8" fill="#818cf8" />
+                    <line x1="100" y1="32" x2="100" y2="48" stroke="#6366f1" stroke-width="5" stroke-linecap="round" />
+                    <circle cx="56" cy="62" r="7" fill="#818cf8" />
+                    <circle cx="144" cy="62" r="7" fill="#818cf8" />
+                    <!-- Head / Body -->
+                    <rect x="42" y="46" width="116" height="92" rx="34" fill="#ffffff" stroke="#6366f1"
+                        stroke-width="6" />
+                    <!-- Screen visor -->
+                    <rect x="54" y="58" width="92" height="68" rx="22" fill="#1e1b4b" />
+                    <!-- Eyes -->
+                    <path d="M72 90 C 72 82, 84 82, 84 90" stroke="#38bdf8" stroke-width="5" stroke-linecap="round"
+                        fill="none" />
+                    <path d="M116 90 C 116 82, 128 82, 128 90" stroke="#38bdf8" stroke-width="5" stroke-linecap="round"
+                        fill="none" />
+                    <!-- Smile -->
+                    <path d="M96 104 C 98 108, 102 108, 104 104" stroke="#38bdf8" stroke-width="4"
+                        stroke-linecap="round" fill="none" />
+                    <!-- Cheeks -->
+                    <circle cx="68" cy="100" r="4" fill="#f43f5e" opacity="0.8" />
+                    <circle cx="132" cy="100" r="4" fill="#f43f5e" opacity="0.8" />
+                    <!-- Holding Photo Frame -->
+                    <g transform="translate(118, 55) rotate(12)">
+                        <rect x="0" y="0" width="60" height="52" rx="8" fill="#ffffff" stroke="#312e81"
+                            stroke-width="4" />
+                        <rect x="6" y="6" width="48" height="40" rx="4" fill="#e0e7ff" />
+                        <circle cx="36" cy="18" r="6" fill="#fbbf24" />
+                        <polygon points="12,42 26,26 48,42" fill="#60a5fa" />
+                    </g>
+                    <!-- Hands -->
+                    <circle cx="48" cy="144" r="12" fill="#818cf8" />
+                    <circle cx="142" cy="120" r="10" fill="#818cf8" />
+                    <!-- Chest sparkle -->
+                    <path d="M100 152 L 102 160 L 110 162 L 102 164 L 100 172 L 98 164 L 90 162 L 98 160 Z"
+                        fill="#818cf8" />
+                </svg>
+            </div>
+
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="human">Human</span> <span class="or">or</span> <span class="not">Not?</span>
+                </h1>
+                <p class="hero-subtitle">Upload an image and let AI decide!</p>
+            </div>
+        </section>
+
+        <!-- Two-Column Cards Grid -->
+        <div class="app-grid">
+
+            <!-- Left Card: Upload -->
+            <div class="upload-card" id="dropZone" onclick="triggerFileInput()">
+                <input type="file" id="fileInput" accept="image/jpeg, image/png, image/webp" style="display: none;"
+                    onchange="handleFileSelect(event)" />
+
+                <div class="cloud-icon-wrapper">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+                        <polyline points="12 11 12 16 12 11" />
+                        <polyline points="9 14 12 11 15 14" />
+                    </svg>
+                </div>
+
+                <h3 class="upload-title">Upload an Image</h3>
+                <p class="upload-desc">Drag & drop your file here, or click to browse</p>
+                <span class="badge-pill">Supports: JPG, PNG, WEBP</span>
+
+                <button type="button" class="btn-choose">
+                    <span>🖼</span> Choose Image
+                </button>
+            </div>
+
+            <!-- Right Card: Live Result View -->
+            <div class="result-card" id="resultCard">
+                <!-- Loading Overlay -->
+                <div class="loading-overlay" id="loadingOverlay">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Analyzing Face with AI...</div>
+                </div>
+
+                <!-- Initial Placeholder State (Before upload) -->
+                <div class="result-empty" id="resultEmpty">
+                    <div class="result-empty-icon">✨</div>
+                    <div class="result-empty-text">No Prediction Yet</div>
+                    <div class="result-empty-sub">Upload an image on the left to see AI classification</div>
+                </div>
+
+                <!-- Populated Result State (After upload) -->
+                <div class="result-active" id="resultActive">
+                    <div>
+                        <div class="result-header">
+                            <div class="result-check-icon" id="resultIcon">✓</div>
+                            <h2 class="result-title" id="resultTitle">It's a Human!</h2>
+                        </div>
+
+                        <div class="confidence-label">
+                            Confidence: <span class="confidence-pct" id="confidencePct">98.7%</span>
+                        </div>
+
+                        <!-- Animated Bar -->
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+
+                    <!-- Thumbnail & Handwritten Note -->
+                    <div class="preview-row">
+                        <div class="preview-img-box">
+                            <img id="resultImagePreview" src="" alt="Analyzed Face" />
+                        </div>
+
+                        <div class="doodle-note" id="doodleNote">
+                            <span id="doodleText">Looks like a human! 😊</span>
+                            <span class="sub-doodle"></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        Made by Jatin Karma ❤️
+    </footer>
+
+    <!-- About Modal -->
+    <div class="modal" id="aboutModal" onclick="closeModalOnBackdrop(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2>About Humanly</h2>
+            <p>
+                <strong>Are You Human?</strong> is a real-time computer vision classifier built using
+                <strong>MobileNetV2 Transfer Learning</strong> and <strong>FastAPI</strong> in Docker.
+            </p>
+            <p>
+                It distinguishes genuine human faces from non-human face-like objects (statues, digital art, anime, CGI,
+                and masks)
+                trained on over 8,500 labeled images.
+            </p>
+            <p>
+                <strong>Architecture:</strong> MobileNetV2 + GlobalAveragePooling2D + Dropout(0.2) + Sigmoid Classifier.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Configuration: Point to your FastAPI backend
+        const API_URL = window.location.origin.includes("http") ? "" : "http://localhost:8000";
+
+        // 1. Check Model Health on Load
+        async function checkHealth() {
+            const badge = document.getElementById("statusBadge");
+            const text = document.getElementById("statusText");
+            try {
+                const res = await fetch(`${API_URL}/ready`);
+                if (res.ok) {
+                    badge.className = "status-badge";
+                    text.innerText = "Model Online";
+                } else {
+                    badge.className = "status-badge offline";
+                    text.innerText = "Model Offline";
+                }
+            } catch (err) {
+                badge.className = "status-badge offline";
+                text.innerText = "Connecting...";
+            }
+        }
+        checkHealth();
+        setInterval(checkHealth, 10000); // Check every 10 seconds
+
+        // 2. Drag & Drop and File Input Handlers
+        function triggerFileInput() {
+            document.getElementById('fileInput').click();
+        }
+
+        const dropZone = document.getElementById('dropZone');
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            }, false);
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processImage(files[0]);
+            }
+        });
+
+        function handleFileSelect(e) {
+            if (e.target.files.length > 0) {
+                processImage(e.target.files[0]);
+            }
+        }
+
+        // 3. Process & Classify Image via API
+        async function processImage(file) {
+            if (!file.type.startsWith('image/')) {
+                alert("Please select a valid image file (JPEG, PNG, or WebP)!");
+                return;
+            }
+
+            // Show local thumbnail preview immediately
+            const previewImg = document.getElementById('resultImagePreview');
+            previewImg.src = URL.createObjectURL(file);
+
+            // Show Loading Spinner
+            const loading = document.getElementById('loadingOverlay');
+            loading.style.display = 'flex';
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch(`${API_URL}/predict`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    throw new Error(`Server returned HTTP ${res.status}`);
+                }
+
+                const data = await res.json();
+                displayPrediction(data);
+            } catch (error) {
+                console.error("Prediction Error:", error);
+                alert("Failed to connect to AI container! Make sure your Docker container is running on port 8000.");
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // 4. Update UI with AI Classification Results
+        function displayPrediction(data) {
+            document.getElementById('resultEmpty').style.display = 'none';
+            const activeSection = document.getElementById('resultActive');
+            activeSection.style.display = 'flex';
+
+            const card = document.getElementById('resultCard');
+            const icon = document.getElementById('resultIcon');
+            const title = document.getElementById('resultTitle');
+            const confPct = document.getElementById('confidencePct');
+            const progressFill = document.getElementById('progressFill');
+            const doodleText = document.getElementById('doodleText');
+
+            if (data.prediction === 'human') {
+                card.classList.remove('is-non-human');
+                icon.innerText = '✓';
+                title.innerText = "It's a Human!";
+                const score = (data.human_probability * 100).toFixed(1);
+                confPct.innerText = `${score}%`;
+                progressFill.style.width = `${score}%`;
+                doodleText.innerText = "Looks like a human! 😊";
+            } else {
+                card.classList.add('is-non-human');
+                icon.innerText = '✗';
+                title.innerText = "Not a Human!";
+                const score = (data.non_human_probability * 100).toFixed(1);
+                confPct.innerText = `${score}%`;
+                progressFill.style.width = `${score}%`;
+                doodleText.innerText = "Looks like an AI or art! 🤖";
+            }
+        }
+
+        // 5. Modal handlers
+        function openModal(e) {
+            e.preventDefault();
+            document.getElementById('aboutModal').style.display = 'flex';
+        }
+        function closeModal() {
+            document.getElementById('aboutModal').style.display = 'none';
+        }
+        function closeModalOnBackdrop(e) {
+            if (e.target.id === 'aboutModal') closeModal();
+        }
+    </script>
+</body>
+
+</html>

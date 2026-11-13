@@ -1,0 +1,26 @@
+{
+  "model_name": "human_face_v1",
+  "test_samples": 855,
+  "accuracy": 96.96,
+  "confusion_matrix": {
+    "true_human_pred_human": 415,
+    "true_human_pred_non_human": 18,
+    "true_non_human_pred_human": 8,
+    "true_non_human_pred_non_human": 414
+  },
+  "metrics": {
+    "human": {
+      "precision": 0.9811,
+      "recall": 0.9584,
+      "f1_score": 0.9696,
+      "support": 433
+    },
+    "non_human": {
+      "precision": 0.9583,
+      "recall": 0.981,
+      "f1_score": 0.9696,
+      "support": 422
+    }
+  },
+  "classification_report": "              precision    recall  f1-score   support\n\n       human     0.9811    0.9584    0.9696       433\n   non_human     0.9583    0.9810    0.9696       422\n\n    accuracy                         0.9696       855\n   macro avg     0.9697    0.9697    0.9696       855\nweighted avg     0.9699    0.9696    0.9696       855\n"
+}
