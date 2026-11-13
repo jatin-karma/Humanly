@@ -1,6 +1,33 @@
+# Virtual environments
 .venv/
+venv/
+env/
+
+# Python cache & compiled bytecode
 __pycache__/
 *.py[cod]
-.env
+*$py.class
+*.pyc
+
+# Dataset folder (8,500+ raw images, ~230 MB)
 data/
+
+# Environment / secrets
+.env
+.env.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor folders
+.vscode/
+.idea/
+
+# Intermediate training logs/CSVs
 models/*training.csv
+
+# Temporary guide notes
+areyouahuman.md
+README_METRICS.md
